@@ -1936,7 +1936,6 @@ defer这个属性表示脚本在执行的时候不会改 变页面的结构。�
 ##  深入事件处理、事件循环和异步机制
 
 ### 浏览器的生命周期
-
 浏览器输入url到渲染到过程需要经历很多的步骤，下图介绍了输入`https://www.ghzs.com/`时，生命周期从开始到结束到过程：
 
 ![生命周期流程](https://pic1.zhimg.com/80/v2-a331224c9fbdff4733456224fca790b8_720w.jpeg)
@@ -1975,7 +1974,7 @@ js代码会有两种类型，区分两种类型的方式就是js代码所在的�
 
 我们一般所说的web应用可以统称为GUI应用，也就是说这种应用会对不同类型 的事件作响应，如鼠标移动、单击和键盘按压等。因此，在页面构建阶 段执行的JavaScript代码，除了会影响全局应用状态和修改DOM外，还会注册事件监听器(或处理器)。这类监听器会在事件发生时，由浏览器调用执行。有了这些事件处理器，我们的应用也就有了交互能力。在详细探讨注册事件处理器之前，让我们先从头到尾看一遍事件处理器的总体 思想。
 
-### 事件处理器概述
+#### 事件处理器概述
 
 JavaScript的执行是单线程的，也就是说同一时刻只能执行一个代码片段，即所谓的单线程执行模型。
 
@@ -2264,5 +2263,361 @@ setTimeout函数只到期一次，setInterval函数则不同，setInterval会持
 
 #### 延迟执行与间隔执行的区别
 
-setTimeout 内的代码在前一个回调函数执行完成之后，至少延迟10ms执行(取决于事件队列的状态，等待时间只会大于10ms);而setInterval会尝试每 10ms执行回调函数，不关心前一个回调函数是否执行。
+`setTimeout()` 内的代码在前一个回调函数执行完成之后，至少延迟10ms执行(取决于事件队列的状态，等待时间只会大于10ms);而`setInterval()`会尝试每 10ms执行回调函数，不关心前一个回调函数是否执行。
+
+### Node.js 事件循环、定时器
+
+上面说的是浏览器环境下的事件循环和定时器，接下来讲讲基于Node.js环境下的事件循环和定时器。
+
+事件循环是Node.js处理非堵塞I/O操作的机制，尽管JavaScript是单线程处理的，当有可能的时候，他们会把操作转移到系统内核中去。
+
+既然目前大多数内核都是多线程的，它们可以在后台处理多种操作。当使用的一个操作完成的时候，内核通知Node.js将合适的回调函数添加到轮询队列中等待时机执行。后面会讲到这一块。
+
+#### Node.js事件循环机制解析
+
+当Node.js启动后，它会初始化事件循环，处理已提供的输入脚本它可能会调用一些异步的 API、调度定时器，或者调用 `process.nextTick()`，然后开始处理事件循环。
+
+面的图表展示了事件循环操作顺序的简化概览。
+
+```basic
+   ┌───────────────────────────┐
+┌─>│           timers          │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │     pending callbacks     │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+│  │       idle, prepare       │
+│  └─────────────┬─────────────┘      ┌───────────────┐
+│  ┌─────────────┴─────────────┐      │   incoming:   │
+│  │           poll            │<─────┤  connections, │
+│  └─────────────┬─────────────┘      │   data, etc.  │
+│  ┌─────────────┴─────────────┐      └───────────────┘
+│  │           check           │
+│  └─────────────┬─────────────┘
+│  ┌─────────────┴─────────────┐
+└──┤      close callbacks      │
+   └───────────────────────────┘
+```
+
+> 注意：每一个框框被称为事件循环的一个阶段。
+
+每个阶段都有一个 FIFO 队列来执行回调。虽然每个阶段都是特殊的，但通常情况下，当事件循环进入给定的阶段时，它将执行特定于该阶段的任何操作，然后执行该阶段队列中的回调，直到队列用尽或最大回调数已执行。当该队列已用尽或达到回调限制，事件循环将移动到下一阶段，等等。
+
+由于这些操作中的任何一个都可能调度更多的操作和由内核排列在轮询阶段被处理的新事件， 且在处理轮询中的事件时，轮询事件可以排队。因此，长时间运行的回调可以允许轮询阶段运行长于计时器的阈值时间。
+
+
+
+#### 六个阶段
+
+- **定时器**：本阶段执行已经被 `setTimeout()` 和 `setInterval()` 的调度回调函数。
+- **待定回调**：执行延迟到下一个循环迭代的 I/O 回调。
+- **idle, prepare**：仅系统内部使用。
+- **轮询**：检索新的 I/O 事件;执行与 I/O 相关的回调（几乎所有情况下，除了关闭的回调函数，那些由计时器和 `setImmediate()` 调度的之外），其余情况 node 将在适当的时候在此阻塞。
+- **检测**：`setImmediate()` 回调函数在这里执行。
+- **关闭的回调函数**：一些关闭的回调函数，如：`socket.on('close', ...)`。
+
+在每次运行的事件循环之间，Node.js 检查它是否在等待任何异步 I/O 或计时器，如果没有的话，则完全关闭。
+
+#### 阶段详细概述
+
+##### 计时器
+
+计时器指定可以执行所提供回调的阀值，而不是用户希望执行的确切时间。在指定的一段时间间隔后，计时器回调将被尽可能的运行。但是，操作系统调度或其他正在运行的回调可能会延迟它们。
+
+有一点需要注意的，轮询阶段，控制什么时候计时器执行。
+
+例如，假设调度了一个在 100 ms后超时的定时器，然后脚本开始异步读取会耗费 95 ms的文件:
+
+```javascript
+const fs = require('fs');
+
+function someAsyncOperation(callback) {
+  // 这里花费95ms完成
+  fs.readFile('/path/to/file', callback);
+}
+
+const timeoutScheduled = Date.now();
+
+setTimeout(() => {
+  const delay = Date.now() - timeoutScheduled;
+
+  console.log(`${delay}ms 后被执行`);
+}, 100);
+
+// 异步操作花费了95ms完成
+someAsyncOperation(() => {
+  const startCallback = Date.now();
+
+  // 这里将花费10m
+  while (Date.now() - startCallback < 10) {
+    // do nothing
+  }
+});
+```
+
+当事件循环进入轮训阶段时，它有一个空队列（此时fs.readfile()尚未完成），因此它将等待剩下的毫秒数，直到达到最快的一个计时器阀值为止。当它等待95毫秒过后时，`fs.readFile()`完成读取文件，它的那个需要10ms才能完成的回调，将被添加到轮询队列中并执行。当回调完成时，队列中不再有回调，因此事件循环机制将检查最快到达阀值当计时器，然后将回到计时器阶段，以执行定时器的回调。在本示例中，你将看到调度计时器到它的回调被执行之间的总延迟将为 105 毫秒。
+
+这里有个需要注意的点：为了防止轮训阶段弄死事件循环，libuv（实现 Node.js 事件循环和平台的所有异步行为的 C 函数库），在停止轮询以获得更多事件之前，还有一个硬性最大值，当然这个具体是依赖于系统的。
+
+#### 挂载阶段回调函数
+
+此阶段对某些系统操作（如TCP错误类型）执行回调。例如，如果TCP套接字在尝试链接时接收到`ECONNREFUSED`，则某些 `*nix` 的系统希望等待报告错误。这将被排队以在挂起的回调阶段执行。
+
+#### 轮询
+
+轮询阶段有两个重要的功能：
+
+1. 计算机阻塞和轮询I/O的时间
+2. 然后，处理轮询队列里的事件
+
+当事件循环进入轮询阶段且没有被调度的计时器时，将会一下两种情况之一：
+
+* 如果轮询队列不为空的，事件循环将循环访问回调队列并同步执行它们，直到队列已用尽，或者达到了与系统相关的硬性限制。
+* 如果轮询队列为空的，还说有两件事发生：
+  * 如果脚本被`setImmediate()`调度，则事件循环将结束轮询阶段，并继续检查阶段以执行那些被调度的脚本。
+  * 如果脚本未被`setImmediate()`调度，则事件循环将等待回调被添加到队列中，然后立即执行。
+
+一旦轮询队列为空，事件循环将检查以达到时间阀值的计时器。如果一个或者多个计时器已经准备就绪，则事件循环将绕回计时器阶段执行这些计时器的回调。
+
+#### 检查阶段
+
+此阶段允许人员在轮询阶段完成后立即执行回调。如果轮询阶段变为空闲状态，并且脚本使用 `setImmediate()` 后被排列在队列中，则事件循环可能继续到检查阶段而不是等待。
+
+`setImmediate()` 实际上是一个在事件循环的单独阶段运行的特殊计时器。它使用一个 libuv API 来安排回调在轮询 阶段完成后执行。
+
+通常，在执行代码时，事件循环最终会命中轮询阶段，在那等待传入连接、请求等。但是，如果回调已使用 `setImmediate()`调度过，并且轮询阶段变为空闲状态，则它将结束此阶段，并继续到检查阶段而不是继续等待轮询事件。
+
+#### 关闭的回调函数
+
+如果套接字或处理函数突然关闭（例如 `socket.destroy()`），则`'close'` 事件将在这个阶段发出。否则它将通过 `process.nextTick()` 发出。
+
+### `setImmediate()`对比`setTimeout()`
+
+`setImmediate()` 和 `setTimeout()` 很类似，但是基于被调用的时机，他们也有不同表现。
+
+- `setImmediate()` 设计为一旦在当前轮询阶段完成， 就执行脚本。
+- `setTimeout()` 在最小阈值（ms 单位）过后运行脚本。
+
+执行计时器的顺序将根据调用它们的上下文而异。如果二者都从主模块内调用，则计时器将受进程性能的约束（这可能会受到计算机上其他正在运行应用程序的影响）。
+
+例如，如果运行以下不在 I/O 周期（即主模块）内的脚本，则执行两个计时器的顺序是非确定性的，因为它受进程性能的约束：
+
+```javascript
+// timeout_vs_immediate.js
+setTimeout(() => {
+  console.log('timeout');
+}, 0);
+
+setImmediate(() => {
+  console.log('immediate');
+});
+```
+
+> 上面是代码
+>
+> 下面是打印
+
+```basic
+$ node timeout_vs_immediate.js
+timeout
+immediate
+
+$ node timeout_vs_immediate.js
+immediate
+timeout
+```
+
+但是，如果你把这两个函数放入一个 I/O 循环内调用，setImmediate 总是被优先调用：
+
+```javascript
+// timeout_vs_immediate.js
+const fs = require('fs');
+
+fs.readFile(__filename, () => {
+  setTimeout(() => {
+    console.log('timeout');
+  }, 0);
+  setImmediate(() => {
+    console.log('immediate');
+  });
+});
+```
+
+> 上面的代码
+>
+> 下面是打印
+
+```basic
+$ node timeout_vs_immediate.js
+immediate
+timeout
+
+$ node timeout_vs_immediate.js
+immediate
+timeout
+```
+
+使用 `setImmediate()` 相对于`setTimeout()` 的主要优势是，如果`setImmediate()`是在 I/O 周期内被调度的，那它将会在其中任何的定时器之前执行，跟这里存在多少个定时器无关。
+
+### `process.nextTick()`
+
+你可能已经注意到 `process.nextTick()` 在图示中没有显示，即使它是异步 API 的一部分。这是因为 `process.nextTick()` 从技术上讲不是事件循环的一部分。相反，它都将在当前操作完成后处理 `nextTickQueue`， 而不管事件循环的当前阶段如何。这里的一个操作被视作为一个从底层 C/C++ 处理器开始过渡，并且处理需要执行的 JavaScript 代码。
+
+可以回顾一下一开始的阶段图，任何时候在给定的阶段中调用 `process.nextTick()`，所有传递到 `process.nextTick()` 的回调将在事件循环继续之前解析。这可能会造成一些糟糕的情况，因为它允许你通过递归`process.nextTick()`调用来“搞死”你的I/O，阻止事件循环到达轮询阶段。
+
+**为什么会允许这样**
+
+为什么这样的事情会包含在 Node.js 中？它的一部分是一个设计理念，其中 API 应该始终是异步的，即使它不必是。以此代码段为例：
+
+```javascript
+function apiCall(arg, callback) {
+  if (typeof arg !== 'string'){
+    return process.nextTick(callback, new TypeError('argument should be string'));
+  }
+}
+```
+
+代码段进行参数检查。如果不正确，则会将错误传递给回调函数。最近对 API 进行了更新，允许传递参数给 `process.nextTick()`，这将允许它接受任何在回调函数位置之后的参数，并将参数传递给回调函数作为回调函数的参数，这样就不必嵌套函数了。
+
+我们正在做的是将错误传回给用户，但仅在执行用户的其余代码之后。通过使用`process.nextTick()`，我们保证 `apiCall()` 始终在用户代码的其余部分*之后*和在让事件循环继续进行之前，执行其回调函数。为了实现这一点，JS 调用栈被允许展开，然后立即执行提供的回调，允许进行递归调用 `process.nextTick()`，而不触碰 `RangeError: 超过 V8 的最大调用堆栈大小` 限制。
+
+这种设计原理可能会导致一些潜在的问题。 以此代码段为例：
+
+```javascript
+let bar;
+
+// 它具有异步签名，但以同步方式调用回调
+function someAsyncApiCall(callback) { callback(); }
+
+// 回调函数在someAsyncApiCall完成之前被调用
+someAsyncApiCall(() => {
+  // someAsyncApiCall已经完成后，bar不会分配任何值
+  console.log('bar', bar); // undefined
+});
+
+bar = 1;
+```
+
+用户将 `someAsyncApiCall()` 定义为具有异步签名，但实际上它是同步运行的。当调用它时，提供给 `someAsyncApiCall()` 的回调是在事件循环的同一阶段内被调用，因为 `someAsyncApiCall()` 实际上并没有异步执行任何事情。结果，回调函数在尝试引用 `bar`，但作用域中可能还没有该变量，因为脚本尚未运行完成。
+
+通过将回调置于 `process.nextTick()` 中，脚本仍具有运行完成的能力，允许在调用回调之前初始化所有的变量、函数等。它还具有不让事件循环继续的优点，适用于让事件循环继续之前，警告用户发生错误的情况。下面是上一个使用 `process.nextTick()` 的示例：
+
+```javascript
+let bar;
+
+function someAsyncApiCall(callback) {
+  process.nextTick(callback);
+}
+
+someAsyncApiCall(() => {
+  console.log('bar', bar); // 1
+});
+
+bar = 1;
+```
+
+这又是另外一个真实的例子：
+
+```js
+const server = net.createServer(() => {}).listen(8080);
+
+server.on('listening', () => {});
+```
+
+只有传递端口时，端口才会立即被绑定。因此，可以立即调用 `'listening'` 回调。问题是 `.on('listening')` 的回调在那个时间点尚未被设置。
+
+为了绕过这个问题，`'listening'` 事件被排在 `nextTick()` 中，以允许脚本运行完成。这让用户设置所想设置的任何事件处理器。
+
+这里给语言开发者一个大大的nice拇指！！！
+
+### `process.nextTick()` 对比 `setImmediate()`
+
+这样要纠正一下对于这两个的理解，因为按照字面意思来说，它们两个的实际作用和字面意思是完全相反的。这个是一个很令人头疼和费解的东西。
+
+- `process.nextTick()` 在同一个阶段立即执行。
+- `setImmediate()` 在事件循环的接下来的迭代或 'tick' 上触发。
+
+实质上，这两个名称应该交换，因为 `process.nextTick()` 比 `setImmediate()` 触发得更快，但这是过去遗留问题，因此不太可能改变。如果贸然进行名称交换，将破坏 npm 上的大部分软件包。每天都有更多新的模块在增加，这意味着我们要多等待每一天，则更多潜在破坏会发生。尽管这些名称使人感到困惑，但它们本身名字不会改变。
+
+我们建议大伙们（开发人员）在所有情况下都使用 `setImmediate()`，因为它更容易理解。
+
+### 为什么要使用 `process.nextTick()`?
+
+上面是建议来使用`setImmediate()`，但是有一些常见是可以使用`process.nextTick()`的。
+
+有两个主要原因：
+
+1. 允许用户处理错误，清理任何不需要的资源，或者在事件循环继续之前重试请求。
+2. 有时有让回调在栈展开后，但在事件循环继续之前运行的必要。
+
+下面举一个符合用户预期的简单示例：
+
+```javascript
+const server = net.createServer();
+server.on('connection', (conn) => { });
+
+server.listen(8080);
+server.on('listening', () => { });
+```
+
+假设 `listen()` 在事件循环开始时运行，但 listening 的回调被放置在 `setImmediate()`中。除非传递过主机名，才会立即绑定到端口。为使事件循环继续进行，它必须命中轮询阶段，这意味着有可能已经接收了一个连接，并在侦听事件之前触发了连接事件。
+
+另一个示例运行的函数构造函数是从 `EventEmitter` 继承的，它想调用构造函数：
+
+```javascript
+const EventEmitter = require('events');
+const util = require('util');
+
+function MyEmitter() {
+  EventEmitter.call(this);
+  this.emit('event');
+}
+util.inherits(MyEmitter, EventEmitter);
+
+const myEmitter = new MyEmitter();
+myEmitter.on('event', () => {
+  console.log('an event occurred!');
+});
+```
+
+你不能立即从构造函数中触发事件，因为脚本尚未处理到用户为该事件分配回调函数的地方。因此，在构造函数本身中可以使用 `process.nextTick()` 来设置回调，以便在构造函数完成后发出该事件，这是预期的结果：
+
+```javascript
+onst EventEmitter = require('events');
+const util = require('util');
+
+function MyEmitter() {
+  EventEmitter.call(this);
+
+  // use nextTick to emit the event once a handler is assigned
+  process.nextTick(() => {
+    this.emit('event');
+  });
+}
+util.inherits(MyEmitter, EventEmitter);
+
+const myEmitter = new MyEmitter();
+myEmitter.on('event', () => {
+  console.log('an event occurred!');
+});
+```
+
+### 小结
+
+* 通过介绍浏览器的生命周期切入，了解页面构建的过程中，脚本事件的工作流程。事件就处理是指当浏览器调用了相应的事件处理器。可以通过属性赋值和`addEventListener`的方式注册事件处理器。
+* 通过事件循环详细的介绍了宏任务、微任务和UI渲染的工作流程。事件循环会先从宏任务队列中执行一个任务，执行完毕后会移动到微任务队列中执行完所有的微任务，执行完毕后会重新渲染UI。/
+* 介绍了计时器`setTimeout()`和`setInterval()`的执行阶段以及实际使用的区别。`setTimeout()`会在前一个回调执行完毕之后执行，具体什么时候执行`setTimeout()`，取决于事件队列的状态以及前面回调执行的时长，通常情况都不会准时执行的;而`setInterval()`会尝试每 10ms（假设设置的是10ms）执行回调函数，不关心前一个回调函数是否执行。
+* 了解了事件循环是Node.js处理非堵塞I/O操作的机制。Node.js的事件循环有六个阶段，每个阶段做的事情有所不同。
+* `setImmediate()`和`setTimeout()`的执行顺序是不定性的。但是，如果你把这两个函数放入一个 I/O 循环内调用，`setImmediate()` 总是被优先调用：
+* `process.nextTick()` 和 `setImmediate()`的实际作用与字面意思是相反的。一般情况，推荐使用`setImmediate()`，因为它更容易理解。
+
+
+
+#### 参考文献
+
+1. 《深入理解Node.js》，作者: [朴灵](https://book.douban.com/search/朴灵) 
+2. JavaScript忍者秘籍（第2版），作者: [[美\] John Resig（莱西格）](https://book.douban.com/search/John Resig) / [[美\] Bear Bibeault（贝比奥特）](https://book.douban.com/search/Bear Bibeault) / [[美\] Josip Maras（马瑞斯）](https://book.douban.com/search/Josip Maras) 
+3. Node.js官网文档，https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
+
 
