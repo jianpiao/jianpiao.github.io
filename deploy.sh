@@ -3,6 +3,13 @@
 # 确保脚本抛出遇到的错误
 set -e
 
+currentDate=`date "+%Y-%m-%d~%H:%M:%S"`
+
+# 先把源码提交到仓库
+git add .
+git commit -m $currentDate
+git push --set-upstream https://gitee.com/smallzip/smallzip-blog.git master
+
 # 生成静态文件
 npm run docs:build
 
@@ -12,7 +19,6 @@ cd docs/.vuepress/dist
 # 如果是发布到自定义域名
 # echo 'www.example.com' > CNAME
 
-currentDate=`date`
 
 git init
 git add -A
