@@ -8,7 +8,7 @@ currentDate=`date "+%Y-%m-%d~%H:%M:%S"`
 # 先把源码提交到仓库
 git add .
 git commit -m $currentDate
-git push --set-upstream https://gitee.com/smallzip/smallzip-blog.git master
+git push
 
 # 生成静态文件
 npm run docs:build
