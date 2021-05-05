@@ -211,7 +211,7 @@ Redux 本身很简单。
 
 ![工作流程](https://vdn1.vzuu.com/SD/b1092c76-2342-11eb-963b-fad3d70fca82.mp4?disable_local_cache=1&bu=pico&expiration=1613228065&auth_key=1613228065-0-0-59b711b85121ad1decc4fc845fe0f15b&f=mp4&v=hw)
 
-![image-20210213203230850](/Users/smallzip/Library/Application Support/typora-user-images/image-20210213203230850.png)
+![image-20210213203230850](https://pic4.zhimg.com/80/v2-9df986606591c2bcced493abaa4bd48c_720w.png)
 
 上面是redux的工作流程。
 

@@ -1378,7 +1378,7 @@ observer.disconnect();
    * 接着将Layout Tree中每个节点转换成屏幕上的实际像素，也就是绘制阶段(重绘:repoint)
    * 最后合成阶段浏览器会将各层信息发送给GPU，GPU将各层合并，显示在屏幕上
    
-   ![image-20210302175220649](/Users/smallzip/Library/Application Support/typora-user-images/image-20210302175220649.png)
+   ![image-20210302175220649](https://pic4.zhimg.com/80/v2-d13d6d599ede80a41dbad72d438c8328_720w.png)
    
    上图为渲染的过程！
 
