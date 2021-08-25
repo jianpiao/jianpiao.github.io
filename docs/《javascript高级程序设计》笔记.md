@@ -2043,7 +2043,7 @@ javascript与HTML之间的交互式通过事件来实现的。事件，就是文
 
 下面图可以形象的描述事件捕获和事件冒泡：
 
-![image-20210206205639802](/Users/smallzip/Library/Application Support/typora-user-images/image-20210206205639802.png)
+![image-20210206205639802](https://pic1.zhimg.com/80/v2-0ea5b0f39571e58988607bd6b8088ff4_720w.png)
 
 #### 事件冒泡
 
@@ -3309,7 +3309,7 @@ JavaScript 一开始就是一门解释型语言，因此执行速度比编译 �
 
 模块需要有一个入口，因为 JavaScript 是顺序执行的，并且是单线程的，所以代码必须有执行的起点。入口模块也可能依 赖其他模块，其他模块同样可能有自己的依赖。于是模块化 JavaScript 应用程序的所有模块会构成依赖 图。
 
-![image-20210207105402767](/Users/smallzip/Library/Application Support/typora-user-images/image-20210207105402767.png)
+![image-20210207105402767](https://pic3.zhimg.com/80/v2-94b818950f653edc28d0c1cc57fa6526_720w.png)
 
 图中的箭头表示依赖方向:模块 A 依赖模块 B 和模块 C，模块 B 依赖模块 D 和模块 E，模块 C 依 赖模块 E。因为模块必须在依赖加载完成后才能被加载，所以这个应用程序的入口模块 A 必须在应用程 序的其他部分加载后才能执行。
 

@@ -1545,7 +1545,7 @@ HTTP3的核心特点如下：
 
 Web 服务器会为所有 HTTP 对象数据附加一个 MIME 类型。当 Web 浏览器从服务器中取回一个对象时，会去查看相关的 MIME 类型，看看它是否知道 应该如何处理这个对象。大多数浏览器都可以处理数百种常见的对象类型:显示图 片文件、解析并格式化 HTML 文件、通过计算机声卡播放音频文件，或者运行外部插件软件来处理特殊格式的数据。
 
-![image-20210202144123242](/Users/smallzip/Library/Application Support/typora-user-images/image-20210202144123242.png)
+![image-20210202144123242](https://pic2.zhimg.com/80/v2-a0bd96fca6c05cd3a2bbca5a27c6a2c9_720w.png)
 
 上图是与数据内容一同回送的 MIME 类型；
 
@@ -1584,7 +1584,7 @@ udp有一下特点：
 
 udp不仅支持一对一的传输方式，同样是支持一对多，多对多，多对一的方式，也就是说UDP提供了单播，多播，广播的功能。
 
-![image-20210202235249187](/Users/smallzip/Library/Application Support/typora-user-images/image-20210202235249187.png)
+![image-20210202235249187](https://pic4.zhimg.com/80/v2-0d664f1a3ebe35889129f8b547ed7859_720w.png)
 
 #### UDP广播
 

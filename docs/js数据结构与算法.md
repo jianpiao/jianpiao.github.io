@@ -156,7 +156,7 @@ class Queue{
 
 链表结构如下图：
 
-![image-20210214175050236](/Users/smallzip/Library/Application Support/typora-user-images/image-20210214175050236.png)
+![image-20210214175050236](https://pic2.zhimg.com/80/v2-190c1826eb6d9db5a7bd333f9c11d043_720w.png)
 
 **数组和链表的差异**
 
@@ -411,7 +411,7 @@ console.log(factorial(5)) // 120
 
 树是一种分层数据的抽象模型，现实生活中最常见的树的结构例子是家谱，如下图：
 
-![image-20210215222056676](/Users/smallzip/Library/Application Support/typora-user-images/image-20210307223238275.png)
+![image-20210215222056676](https://pic1.zhimg.com/80/v2-98ff67ed450ec003aec115681957ddbb_720w.png)
 
 ### 树的相关术语
 
@@ -423,7 +423,7 @@ console.log(factorial(5)) // 120
 
 一个树的结构包括一系列存在父子关系的节点。每个节点都有一个父节点(除了顶部的第一个 节点)以及零个或多个子节点:
 
-![image-20210215222212734](/Users/smallzip/Library/Application Support/typora-user-images/image-20210215222212734.png)
+![image-20210215222212734](https://pic2.zhimg.com/80/v2-a7c9dbd8e56bc8a600ee7106ea008370_720w.png)
 
 ### 树的遍历
 
@@ -435,19 +435,19 @@ console.log(factorial(5)) // 120
 
 中序遍历顺序：
 
-![image-20210215222739767](/Users/smallzip/Library/Application Support/typora-user-images/image-20210215222739767.png)
+![image-20210215222739767](https://pic2.zhimg.com/80/v2-a7c9dbd8e56bc8a600ee7106ea008370_720w.png)
 
 #### 先序遍历 
 
 先序遍历是以优先于后代节点的顺序访问每个节点的。
 
-![image-20210215222824731](/Users/smallzip/Library/Application Support/typora-user-images/image-20210215222824731.png)
+![image-20210215222824731](https://pic1.zhimg.com/80/v2-5cb19a2f85886425d4d535c7021d8012_720w.png)
 
 #### 后序遍历
 
 后序遍历则是先访问节点的后代节点，再访问节点本身。
 
-![image-20210215222923870](/Users/smallzip/Library/Application Support/typora-user-images/image-20210215222923870.png)
+![image-20210215222923870](https://pic1.zhimg.com/80/v2-db1a0a718c30251874d9e6da495228c0_720w.png)
 
 
 
@@ -462,7 +462,7 @@ console.log(factorial(5)) // 120
 * 它是一棵完全二叉树，表示树的每一层都有左侧和右侧子节点(除了最后一层的叶节点)， 并且最后一层的叶节点尽可能都是左侧子节点，这叫作结构特性。
 * 二叉堆不是最小堆就是最大堆。最小堆允许你快速导出树的最小值，最大堆允许你快速 导出树的最大值。所有的节点都大于等于(最大堆)或小于等于(最小堆)每个它的子 节点。这叫作堆特性。
 
-![image-20210215223432828](/Users/smallzip/Library/Application Support/typora-user-images/image-20210215223432828.png)
+![image-20210215223432828](https://pic4.zhimg.com/80/v2-b705ed69ada177394040255b05210235_720w.png)
 
 通过上面的图可以大致的了解二叉堆的结构正确性。
 
