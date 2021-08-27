@@ -34,6 +34,7 @@ module.exports = {
           "/javascript技术积累/深入事件循环和定时器",
           "/javascript技术积累/Node、node-watch、Chokidar实现文件监听封装思路解析",
           "/javascript技术积累/vue手动实现一个简易版subscribeAction",
+          "/javascript技术积累/探索nodemon的实现",
         ],
       },
       {
