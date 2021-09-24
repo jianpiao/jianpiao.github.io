@@ -80,7 +80,7 @@ rollup
 
 ## `fs.watchFile`
 
-监听单个文件，每当访问文件时会触发回调，保存文件后有可能不会及时触发回调，因为使用的轮训机制。[官网地址](https://nodejs.org/docs/latest-v9.x/api/fs.html#fs_fs_watchfile_filename_options_listener)
+监听单个文件，每当访问文件时会触发回调，保存文件后有可能不会及时触发回调，因为使用的轮询机制。[官网地址](https://nodejs.org/docs/latest-v9.x/api/fs.html#fs_fs_watchfile_filename_options_listener)
 
 ```javascript
 const rollup = require("rollup");
@@ -190,7 +190,7 @@ rollup
 
 同样文件更新了两次。
 
-其次有个比较明显的差异是，相应比较快，相比于`watchFile`的轮训效率更高。
+其次有个比较明显的差异是，相应比较快，相比于`watchFile`的轮询效率更高。
 
 这里有一个问题是每次更新都触发了两次回调，这个不符合预期，可以通过文件对比的方式进行差异化检查，这里我用到了md5插件。
 
@@ -404,7 +404,7 @@ Watcher.prototype.watchDirectory = function(file, options, fn){
 
 Chokidar 是一个极简高效的跨平台文件查看器。我第一次了解到Chokidar是在看vite源码的时候，vite的文件更新监听使用的正是Chokidar。除此之外，使用到Chokidar的还有 [Microsoft's Visual Studio Code](https://github.com/microsoft/vscode), [gulp](https://github.com/gulpjs/gulp/),[karma](https://karma-runner.github.io/), [PM2](https://github.com/Unitech/PM2), [browserify](http://browserify.org/), [webpack](https://webpack.github.io/), [BrowserSync](https://www.browsersync.io/), and [many others](https://www.npmjs.com/browse/depended/chokidar)，在开发环境下都有它的身影。
 
-Chokidar本质上是依赖于node的`fs.watch`和`fs.watchFile`，相比于前面的node-watch，Chokidar封装的更加强壮、稳定，性能更好，有更高的CPU使用率。
+Chokidar本质上是做了系统区分，在OS X系统中依赖原生fsevents API实现文件监控，在Window、Linux等系统中依赖node的`fs.watch`和`fs.watchFile`实现文件监控，相比于前面的node-watch，Chokidar封装的更加强壮、稳定，性能更好，有更好的CPU使用率。
 
 ### 使用方法
 
@@ -641,8 +641,6 @@ function getInfo(path, flags) {
 ## 总结
 
 热更新是我们开发期间最常用的功能，能够大大提高开发的效率，只要编译器保存一下就可以更新项目。比如我们咱们公司很多前端项目都是使用webpack打包工具，其中的热更新是使用HRM插件，比如vue3推荐使用的vite，文件更新正是使用的Chokidar，[vite使用Chokidar的地址](https://github.com/vitejs/vite/blob/fb406ce4c0fe6da3333c9d1c00477b2880d46352/packages/vite/src/node/build.ts#L486)。
-
-咱们公司技术大佬[伟杰](https://wiki.ghzs.com/display/~moweijie)专门写了个[vscode插件](https://github.com/weekitmo/flutter-assets-gen)，使用的文件更新正是Chokidar。
 
 通过对于源码的分析，可以更好的了解Node的`fs.watch`还存在的问题，以及如何去解决这些问题，当自己遇到了相似的问题该选择使用原生的`fs.watch`还是选择轻量化的node-watch，又或者是成熟稳定的Chokidar。
 
