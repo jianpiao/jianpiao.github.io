@@ -1954,23 +1954,26 @@ let tea = new Tea(); tea.init();
 
 ```javascript
 class Model {
-  constructor(sex,underwear){
-    this.sex = sex
-    this.underwear = underwear
+  constructor(sex, underwear) {
+    this.sex = sex // 性别
+    this.underwear = underwear // 内衣
   }
-  
-	takePhoto(){
-    console.log('sex= ' + this.sex + ' underwear=' + this.underwear)
+
+  // 拍照
+  takePhoto() {
+    console.log(`性别 = ${this.sex} 内衣 = ${this.underwear}`)
   }
 }
 
-for(let i=1; i<=50; i++){
-  let maleModel = new Model('male', 'underwear' + i)
+// 男性
+for (let i = 1; i <= 50; i++) {
+  let maleModel = new Model('男性', '内衣' + i)
   maleModel.takePhoto()
 }
 
-for(let i=1; i<=50; i++){
-  let femaleModel = new Model('male', 'underwear' + i)
+// 女性
+for (let i = 1; i <= 50; i++) {
+  let femaleModel = new Model('女性', '内衣' + i)
   femaleModel.takePhoto()
 }
 ```
@@ -1988,38 +1991,38 @@ class Model {
   }
 
   takePhoto() {
-    console.log('sex= ' + this.sex + ' underwear=' + this.underwear)
+    console.log(`性别 = ${this.sex} 内衣 = ${this.underwear}`)
   }
 }
 
-let maleModel = new Model('male')
-let femaleModel = new Model('male')
+let maleModel = new Model('男性')
+let femaleModel = new Model('女性')
 
 for (let i = 1; i <= 50; i++) {
-  maleModel.underwear = 'underwear' + i;
+  maleModel.underwear = '内衣' + i;
   maleModel.takePhoto()
 }
 
 for (let i = 1; i <= 50; i++) {
-  femaleModel.underwear = 'underwear' + i;
+  femaleModel.underwear = '内衣' + i;
   femaleModel.takePhoto()
 }
 ```
 
-改进之后的代码，只需要两个对象便可完成同意的功能。
+改进之后的代码，只需要两个对象便可完成同样的功能。
 
 ### 内部状态与外部状态
 
 上面例子便是享元模式的雏形，享元模式要求将对象的属性划分为内部状态与外部 状态(状态在这里通常指属性)。享元模式的目标是尽量减少共享对象的数量，关于如何划分内 部状态和外部状态，下面的几条经验提供了一些指引。
 
 * 内部状态存储于对象内部。
-* 内部状态可以被一些对象共享
+* 内部状态可以被一些对象共享。
 * 内部状态独立于具体的场景，通常不会改变。
 * 外部状态取决于具体的场景，并根据场景而变化，外部状态不能共享。
 
 这样一来，我们便可以把所有内部状态相同的对象都指定为同一个共享的对象。而外部状态 可以从对象身上剥离出来，并储存在外部。
 
-剥离了外部状态的对象成为共享对象，外部状态在必要时被传入共享对象来组装成一个完整 的对象。虽然组装外部状态成为一个完整对象的过程需要花费一定的时间，但却可以大大减少系 统中的对象数量，相比之下，这点时间或许是微不足道的。因此，享元模式是一种用时间换空间 的优化模式。
+剥离了外部状态的对象成为共享对象，外部状态在必要时被传入共享对象来组装成一个完整 的对象。虽然组装外部状态成为一个完整对象的过程需要花费一定的时间，但却可以大大减少系统中的对象数量，相比之下，这点时间或许是微不足道的。因此，享元模式是一种用时间换空间 的优化模式。
 
 在上面的例子中，性别是内部状态，内衣是外部状态，通过区分这两种状态，大大减少了系 统中的对象数量。通常来讲，内部状态有多少种组合，系统中便最多存在多少个对象，因为性别 通常只有男女两种，所以该内衣厂商最多只需要 2 个对象。
 
@@ -2036,7 +2039,9 @@ for (let i = 1; i <= 50; i++) {
 
 ### 对象池
 
-我们在前面已经提到了 Java 中 String 的对象池，下面就来学习这种共享的技术。对象池维 护一个装载空闲对象的池子，如果需要对象的时候，不是直接 new，而是转从对象池里获取。如 果对象池里没有空闲对象，则创建一个新的对象，当获取出的对象完成它的职责之后， 再进入 池子等待被下次获取。
+我们在前面已经提到了 Java 中 String 的对象池，
+
+下面就来学习这种共享的技术。对象池维 护一个装载空闲对象的池子，如果需要对象的时候，不是直接 new，而是转从对象池里获取。如 果对象池里没有空闲对象，则创建一个新的对象，当获取出的对象完成它的职责之后， 再进入 池子等待被下次获取。
 
 对象池的原理很好理解，比如我们组人手一本《JavaScript 权威指南》，从节约的角度来讲， 这并不是很划算，因为大部分时间这些书都被闲置在各自的书架上，所以我们一开始就只买一本， 或者一起建立一个小型图书馆(对象池)，需要看书的时候就从图书馆里借，看完了之后再把书 还回图书馆。如果同时有三个人要看这本书，而现在图书馆里只有两本，那我们再马上去书店买 一本放入图书馆。
 
@@ -2050,7 +2055,7 @@ for (let i = 1; i <= 50; i++) {
 
 ## 十、职责链模式
 
-职责链模式的定义是:使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间 5 的耦合关系，将这些对象连成一条链，并沿着这条链传递该请求，直到有一个对象处理它为止。
+职责链模式的定义是：使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系，将这些对象连成一条链，并沿着这条链传递该请求，直到有一个对象处理它为止。
 
 ### 现实中的职责链模式
 
@@ -2059,11 +2064,11 @@ for (let i = 1; i <= 50; i++) {
 1. 如果早高峰能顺利挤上公交车的话，那么估计这一天都会过得很开心。因为公交车上人 实在太多了，经常上车后却找不到售票员在哪，所以只好把两块钱硬币往前面递。除非 你运气够好，站在你前面的第一个人就是售票员，否则，你的硬币通常要在 N 个人手上 传递，才能最终到达售票员的手里。
 2. 中学时代的期末考试，如果你平时不太老实，考试时就会被安排在第一个位置。遇到不 会答的题目，就把题目编号写在小纸条上往后传递，坐在后面的同学如果也不会答，他 就会把这张小纸条继续递给他后面的人。
 
-从这两个例子中，我们很容易找到职责链模式的最大优点:请求发送者只需要知道链中的第 一个节点，从而弱化了发送者和一组接收者之间的强联系。如果不使用职责链模式，那么在公交 车上，我就得先搞清楚谁是售票员，才能把硬币递给他。同样，在期末考试中，也许我就要先了 解同学中有哪些可以解答这道题。
+从这两个例子中，我们很容易找到职责链模式的最大优点：请求发送者只需要知道链中的第 一个节点，从而弱化了发送者和接收者之间的强联系。如果不使用职责链模式，那么在公交 车上，我就得先搞清楚谁是售票员，才能把硬币递给他。同样，在期末考试中，我就得先了解同学中有哪些可以解答这道题。
 
 ### 职责链模式案例
 
-假设我们负责一个售卖手机的电商网站，经过分别交纳 500 元定金和 200 元定金的两轮预定后(订单已在此时生成)，现在已经到了正式购买的阶段。
+假设我们负责一个售卖手机的电商网站，分别交纳 500 元定金和 200 元定金的两轮预定后(订单已在此时生成)，现在已经到了正式购买的阶段。
 
 公司针对支付过定金的用户有一定的优惠政策。在正式购买后，已经支付过 500 元定金的用 户会收到 100 元的商城优惠券，200 元定金的用户可以收到 50 元的优惠券，而之前没有支付定金 的用户只能进入普通购买模式，也就是没有优惠券，且在库存有限的情况下不一定保证能买到。
 
@@ -2103,7 +2108,7 @@ order500(3,false,500)  // 普通购买，无优惠券
 order500(3,false,0)  // 手机库存不足
 ```
 
-可以看到，请求在链条传递中的顺序非常僵硬，传递请求的代码被耦合在了业务函 数之中，这依然是违反开放封闭原则的，如果有天我们要增加 300 元预订或者去掉 200 元预订，意 味着就必须改动这些业务函数内部。就像一根环环相扣打了死结的链条，如果要增加、拆除或者 移动一个节点，就必须得先砸烂这根链条。
+可以看到，请求在链条传递中的顺序非常重要，传递请求的代码被耦合在了业务函 数之中，这已然是违反开放封闭原则的，如果有天我们要增加 300 元预订或者去掉 200 元预订，意 味着就必须改动这些业务函数内部。就像一根环环相扣打了死结的链条，如果要增加、拆除或者 移动一个节点，就必须得先砸烂这根链条。
 
 ### 灵活可拆分的职责链节点
 
@@ -2244,6 +2249,8 @@ order(1, false, 500); // 输出:普通购买，无优惠券
 
 ## 十一、中介者模式
 
+中介者模式是为了更好的使对象与对象之间解耦。
+
 在我们生活的世界中，每个人每个物体之间都会产生一些错综复杂的联系。在应用程序里也  是一样，程序由大大小小的单一对象组成，所有这些对象都按照某种关系和规则来通信。
 
 平时我们大概能记住 10 个朋友的电话、30 家餐馆的位置。在程序里，也许一个对象会和其 他 10 个对象打交道，所以它会保持 10 个对象的引用。当程序的规模增大，对象会越来越多，它 们之间的关系也越来越复杂，难免会形成网状的交叉引用。当我们改变或删除其中一个对象的时 候，很可能需要通知所有引用到它的对象。
@@ -2341,7 +2348,8 @@ let playerDirector = (function () {
       let teamColor = player.teamColor,
         teamPlayers = players[teamColor];
       let all_dead = true;
-      // 玩家死亡 // 玩家所在队伍
+      // 玩家死亡 
+      // 玩家所在队伍
       for (let i = 0, player; player = teamPlayers[i++];) {
         if (player.state !== 'dead') {
           all_dead = false;
@@ -2364,7 +2372,7 @@ let playerDirector = (function () {
       }
     }
   };
-  // 其他队伍的玩家 // 其他队伍所有玩家 win
+  // 其他队伍所有玩家 win
   let reciveMessage = function () {
     let message = Array.prototype.shift.call(arguments)
     operations[message].apply(this, arguments)
@@ -2677,47 +2685,50 @@ Function.prototype.after = function (afterfn) {
 
 我们来想象这样一个场景:有一个电灯，电灯上面只有一个开关。当电灯开着的时候，此时 按下开关，电灯会切换到关闭状态;再按一次开关，电灯又将被打开。同一个开关按钮，在不同 的状态下，表现出来的行为是不一样的。
 
-现在用代码来描述这个场景，首先定义一个 Light 类，可以预见，电灯对象 light 将从 Light 类创建而出， light 对象将拥有两个属性，我们用 state 来记录电灯当前的状态，用 button 表示 具体的开关按钮。下面来编写这个电灯程序的例子。
+现在用代码来描述这个场景，首先定义一个 `Light` 类，电灯对象 `light` 将从 `Light` 类创建而出， `light` 对象将拥有两个属性，我们用 `state` 来记录电灯当前的状态，用 `button` 表示 具体的开关按钮。下面来编写这个电灯程序的例子。
 
 ### 第一个例子:电灯程序
 
 首先给出不用状态模式的电灯程序实现:
 
 ```javascript
-let Light = function () {
+class Light {
   this.state = 'off'; // 给电灯设置初始状态off
   this.button = null; // 电灯开关按钮
-};
+}
 ```
 
 接下来定义 `Light.prototype.init `方法，该方法负责在页面中创建一个真实的` button` 节点， 假设这个 `button `就是电灯的开关按钮，当` button `的` onclick`事件被触发时，就是电灯开关被按下 的时候，代码如下:
 
 ```javascript
-Light.prototype.init = function () {
-  let button = document.createElement('button')
-  let self = this;
-
-  button.innerHTML = '开关';
-  this.button = document.body.appendChild(button);
-  this.button.onclick = function () {
-    self.buttonWasPressed();
+class Light {
+  init(){
+  	let self = this;
+    let button = document.createElement('button')
+    button.innerHTML = '开关';
+    this.button = document.body.appendChild(button);
+    this.button.onclick = function () {
+      self.buttonWasPressed();
+    }
   }
-};
+}
 
 ```
 
 当开关被按下时，程序会调用 `self.buttonWasPressed` 方法， 开关按下之后的所有行为，都将被封装在这个方法里，代码如下:
 
 ```javascript
-Light.prototype.buttonWasPressed = function () {
-  if (this.state === 'off') {
-    console.log('开灯');
-    this.state = 'on';
-  } else if (this.state === 'on') {
-    console.log('关灯');
-    this.state = 'off';
-  }
-};
+class Light {
+ 	buttonWasPressed(){
+ 	  if (this.state === 'off') {
+      console.log('开灯');
+      this.state = 'on';
+    } else if (this.state === 'on') {
+      console.log('关灯');
+      this.state = 'off';
+    }
+ 	}
+}
 
 let light = new Light();
 light.init();
@@ -2726,18 +2737,20 @@ light.init();
 这个世界上的电灯并非只有一种。许多酒店里有另外一种电灯，这种电灯也 只有一个开关，但它的表现是:第一次按下打开弱光，第二次按下打开强光，第三次才是关闭电 灯。现在必须改造上面的代码来完成这种新型电灯的制造:
 
 ```javascript
-Light.prototype.buttonWasPressed = function () {
-  if (this.state === 'off') {
-    console.log('弱光');
-    this.state = 'weakLight';
-  } else if (this.state === 'weakLight') {
-    console.log('强光');
-    this.state = 'strongLight';
-  } else if (this.state === 'strongLight') {
-    console.log('关灯');
-    this.state = 'off';
-  }
-};
+class Light {
+ 	buttonWasPressed(){
+   if (this.state === 'off') {
+      console.log('弱光');
+      this.state = 'weakLight';
+    } else if (this.state === 'weakLight') {
+      console.log('强光');
+      this.state = 'strongLight';
+    } else if (this.state === 'strongLight') {
+      console.log('关灯');
+      this.state = 'off';
+    }
+ 	}
+}
 ```
 
 现在这个反例先告一段落，我们来考虑一下上述程序的缺点。
@@ -2752,7 +2765,6 @@ Light.prototype.buttonWasPressed = function () {
 现在我们学习使用状态模式改进电灯的程序。有意思的是，通常我们谈到封装，一般都会优 先封装对象的行为，而不是对象的状态。但在状态模式中刚好相反，状态模式的关键是把事物的 每种状态都封装成单独的类，跟此种状态有关的行为都被封装在这个类的内部，所以 button 被按 下的的时候，只需要在上下文中，把这个请求委托给当前的状态对象即可，该状态对象会负责渲 染它自身的行为。
 
 下面进入状态模式的代码编写阶段，首先将定义 3 个状态类，分别是 offLightState、
-
 WeakLightState、strongLightState。这 3 个类都有一个原型方法 buttonWasPressed，代表在各自状态下，按钮被按下时将发生的行为，代码如下:
 
 ```javascript
@@ -2763,7 +2775,8 @@ class OffLightState {
   }
 
   buttonWasPressed() {
-    console.log('弱光'); // offLightState 对应的行为 this.light.setState( this.light.weakLightState );
+    console.log('关灯');Ï
+    this.light.setState( this.light.offLightState ); // 切换状态到 offLightState
   }
 }
 
@@ -2774,7 +2787,8 @@ class WeakLightState {
   }
 
   buttonWasPressed() {
-    console.log('强光'); // weakLightState 对应的行为 this.light.setState( this.light.strongLightState );
+    console.log('弱光');
+    this.light.setState( this.light.weakLightState ); // 切换状态到 weakLightState
   }
 }
 
@@ -2786,8 +2800,8 @@ class StrongLightState {
   }
 
   buttonWasPressed() {
-    console.log('关灯'); // strongLightState 对应的行为
-    this.light.setState(this.light.offLightState); // 切换状态到 offLightState
+    console.log('强光');
+    this.light.setState(this.light.strongLightState); // 切换状态到 strongLightState
   }
 }
 ```
@@ -2795,12 +2809,12 @@ class StrongLightState {
 接下来改写 Light 类，现在不再使用一个字符串来记录当前的状态，而是使用更加立体化的 状态对象。我们在 Light 类的构造函数里为每个状态类都创建一个状态对象，这样一来我们可以 很明显地看到电灯一共有多少种状态，代码如下:
 
 ```javascript
-let Light = function () {
+class Light {
   this.offLightState = new OffLightState(this);
   this.weakLightState = new WeakLightState(this);
   this.strongLightState = new StrongLightState(this);
   this.button = null;
-};
+}
 ```
 
 
@@ -2808,24 +2822,27 @@ let Light = function () {
 在` button` 按钮被按下的事件里，`Context` 也不再直接进行任何实质性的操作，而是通过 `self.currState.buttonWasPressed()`将请求委托给当前持有的状态对象去执行，代码如下:
 
 ```javascript
-Light.prototype.init = function () {
-  let button = document.createElement('button'),
+class Light {
+	init(){
+		let button = document.createElement('button'),
     self = this;
-  this.button = document.body.appendChild(button); this.button.innerHTML = '开关';
-  this.currState = this.offLightState; // 设置当前状态
-  this.button.onclick = function () {
-    self.currState.buttonWasPressed();
-  }
-};
-
+    this.button = document.body.appendChild(button); this.button.innerHTML = '开关';
+    this.currState = this.offLightState; // 设置当前状态
+    this.button.onclick = function () {
+      self.currState.buttonWasPressed();
+    }
+	}
+}
 ```
 
-最后还要提供一个 Light.prototype.setState 方法，状态对象可以通过这个方法来切换 light 对象的状态。前面已经说过，状态的切换规律事先被完好定义在各个状态类中。在 Context 中再 4 也找不到任何一个跟状态切换相关的条件分支语句:
+最后还要提供一个 Light.prototype.setState 方法，状态对象可以通过这个方法来切换 light 对象的状态。前面已经说过，状态的切换规律事先被完好定义在各个状态类中。在 Context 中再也找不到任何一个跟状态切换相关的条件分支语句:
 
 ```javascript
-Light.prototype.setState = function (newState) {
-  this.currState = newState; 5
-};
+class Light	{
+	setState(){
+		this.currState = newState; 5
+	}
+}
 
 let light = new Light()
 light.init()
@@ -2841,8 +2858,8 @@ class OffLightState {
   }
 
   buttonWasPressed() {
-    console.log('弱光'); // offLightState 对应的行为 
-    this.light.setState(this.light.weakLightState);
+    console.log('关灯'); // offLightState 对应的行为 
+    this.light.setState(this.light.offLightState);
   }
 }
 
@@ -2853,8 +2870,8 @@ class WeakLightState {
   }
 
   buttonWasPressed() {
-    console.log('强光'); // weakLightState 对应的行为 
-    this.light.setState(this.light.strongLightState);
+    console.log('弱光'); // weakLightState 对应的行为 
+    this.light.setState(this.light.weakLightState);
   }
 }
 
@@ -2866,8 +2883,8 @@ class StrongLightState {
   }
 
   buttonWasPressed() {
-    console.log('关灯'); // strongLightState 对应的行为
-    this.light.setState(this.light.offLightState); // 切换状态到 offLightState
+    console.log('强光'); // strongLightState 对应的行为
+    this.light.setState(this.light.strongLightState); // 切换状态到 strongLightState
   }
 }
 
@@ -2914,8 +2931,8 @@ class SuperStrongLightState {
   }
 
   buttonWasPressed() {
-    console.log('关灯'); // SuperStrongLightState 对应的行为
-    this.light.setState(this.light.offLightState); // 切换状态到 offLightState
+    console.log('超强光'); // SuperStrongLightState 对应的行为
+    this.light.setState(this.light.superStrongLightState); // 切换状态到 superStrongLightState
   }
 ```
 
@@ -2931,8 +2948,8 @@ class OffLightState {
   }
 
   buttonWasPressed() {
-    console.log('弱光'); // offLightState 对应的行为 
-    this.light.setState(this.light.weakLightState);
+    console.log('关灯'); // offLightState 对应的行为 
+    this.light.setState(this.light.offLightState);
   }
 }
 
@@ -2943,8 +2960,8 @@ class WeakLightState {
   }
 
   buttonWasPressed() {
-    console.log('强光'); // weakLightState 对应的行为 
-    this.light.setState(this.light.strongLightState);
+    console.log('弱光'); // weakLightState 对应的行为 
+    this.light.setState(this.light.weakLightState);
   }
 }
 
@@ -2956,8 +2973,8 @@ class StrongLightState {
   }
 
   buttonWasPressed() {
-    console.log('超强光'); // strongLightState 对应的行为
-    this.light.setState(this.light.superStrongLightState); // 切换状态到 superStrongLightState
+    console.log('强光'); // strongLightState 对应的行为
+    this.light.setState(this.light.strongLightState); // 切换状态到 strongLightState
   }
 }
 
@@ -2968,8 +2985,8 @@ class SuperStrongLightState {
   }
 
   buttonWasPressed() {
-    console.log('关灯'); // SuperStrongLightState 对应的行为
-    this.light.setState(this.light.offLightState); // 切换状态到 offLightState
+    console.log('超强光'); // SuperStrongLightState 对应的行为
+    this.light.setState(this.light.superStrongLightState); // 切换状态到 SuperStrongLightState
   }
 }
 
@@ -3011,7 +3028,7 @@ light.init();
 
 适配器模式的作用是解决两个软件实体间的接口不兼容的问题。使用适配器模式之后，原本 由于接口不兼容而不能工作的两个软件实体可以一起工作。
 
-适配器的别名是包装器(wrapper)，这是一个相对简单的模式。在程序开发中有许多这样的 场景:当我们试图调用模块或者对象的某个接口时，却发现这个接口的格式并不符合目前的需求。 这时候有两种解决办法，第一种是修改原来的接口实现，但如果原来的模块很复杂，或者我们拿 到的模块是一段别人编写的经过压缩的代码，修改原接口就显得不太现实了。第二种办法是创建 一个适配器，将原接口转换为客户希望的另一个接口，客户只需要和适配器打交道。
+适配器的别名是包装器(`wrapper`)，这是一个相对简单的模式。在程序开发中有许多这样的 场景:当我们试图调用模块或者对象的某个接口时，却发现这个接口的格式并不符合目前的需求。 这时候有两种解决办法，第一种是修改原来的接口实现，但如果原来的模块很复杂，或者我们拿 到的模块是一段别人编写的经过压缩的代码，修改原接口就显得不太现实了。第二种办法是创建 一个适配器，将原接口转换为客户希望的另一个接口，客户只需要和适配器打交道。
 
 ### 适配器模式的应用
 
@@ -3054,6 +3071,7 @@ let googleMap = {
     console.log('开始渲染谷歌地图');
   }
 };
+
 let baiduMap = {
   display: function () {
     console.log('开始渲染百度地图');
@@ -3063,6 +3081,12 @@ let baiduMapAdapter = {
   show: function () {
     return baiduMap.display();
 
+  }
+};
+
+let renderMap = function (map) {
+  if (map.show instanceof Function) {
+    map.show();
   }
 };
 renderMap(googleMap);  // 输出:开始渲染谷歌地图
@@ -3076,10 +3100,10 @@ let getGuangdongCity = function () {
   let guangdongCity = [
     {
       name: 'shenzhen',
-      id: 1
+      id: 11
     }, {
       name: 'guangzhou',
-      id: 2
+      id: 12
     }
   ];
   return guangdongCity
@@ -3109,7 +3133,7 @@ let guangdongCity = {
 ```javascript
 let addressAdapter = function(oldAddressfn){
   let address = {},
-      oldAddress = oldAddressfn;
+      oldAddress = oldAddressfn();
   
   for(const c of oldAddress){
     address[c.name] = c.id
@@ -3120,12 +3144,12 @@ let addressAdapter = function(oldAddressfn){
   }
 }
 
-render(addressAdapter(getGuangdongCity())) // {"shenzhen":11,"guangzhou":12}
+render(addressAdapter(getGuangdongCity())) // {"shenzhen":11,"guangzhou":12,"zhuhai":13}
 ```
 
 ### 小结
 
-适配器模式是一对相对简单的模式。在本书提到的设计模式中，有一些模式跟适配器模式的 结构非常相似，比如装饰者模式、代理模式和外观模式。这几种模式都属于“包 装模式”，都是由一个对象来包装另一个对象。区别它们的关键仍然是模式的意图。
+适配器模式是一对相对简单的模式。在本书提到的设计模式中，有一些模式跟适配器模式的结构非常相似，比如装饰者模式、代理模式和外观模式。这几种模式都属于“包 装模式”，都是由一个对象来包装另一个对象。区别它们的关键仍然是模式的意图。
 
 * 适配器模式主要用来解决两个已有接口之间不匹配的问题，它不考虑这些接口是怎样实 现的，也不考虑它们将来可能会如何演化。适配器模式不需要改变已有的接口，就能够 使它们协同作用。
 * 装饰者模式和代理模式也不会改变原有对象的接口，但装饰者模式的作用是为了给对象 增加功能。装饰者模式常常形成一条长的装饰链，而适配器模式通常只包装一次。代理 模式是为了控制对对象的访问，通常也只包装一次。

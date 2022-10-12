@@ -4,7 +4,7 @@
 
 ## Console
 
-`console`是我们日常开发最常用的命令了，现在来看看它是怎么实现的
+`console`是我们日常开发最常用的命令了，现在来看看它是怎么实现的。
 
 ### 第一步
 
@@ -55,6 +55,12 @@ function Console(options /* or: stdout, stderr, ignoreErrors = true */) {
 ### 第二步
 
 上面`Console`构造函数的属性还很简陋，需要增强原型属性。
+
+会检查输出的类型匹配对应的颜色，比如是`error`则使用红色字体。
+
+最后调用`stream.write(string, errorHandler);`数据流，输出到控制台中。
+
+[stream.write函数](https://github.com/nodejs/node/blob/80065865be96b5e283e0bd9caccd96521839cd3d/lib/internal/streams/writable.js#L284)
 
 ```javascript
 ObjectDefineProperties(Console.prototype, {
@@ -299,122 +305,14 @@ ObjectDefineProperties(Console.prototype, {
 
 #### table
 
+table的实现有些复杂，这里不做展示，可以直接看[源码](https://github.com/nodejs/node/blob/80065865be96b5e283e0bd9caccd96521839cd3d/lib/internal/console/constructor.js#L481)
+
 ```javascript
   // 将数据以表格的形式显示
   // 本质上是将传来的值转换成为二维数组
   // 会针对纯字符串数组和对象数组做区分处理
   table(tabularData, properties) {
-    if (properties !== undefined && !ArrayIsArray(properties))
-      throw new ERR_INVALID_ARG_TYPE('properties', 'Array', properties);
-
-    if (tabularData === null || typeof tabularData !== 'object')
-      return this.log(tabularData);
-
-    if (cliTable === undefined) cliTable = require('internal/cli_table');
-    const final = (k, v) => this.log(cliTable(k, v));
-
-    const _inspect = (v) => {
-      const depth =
-        v !== null &&
-        typeof v === 'object' &&
-        !isArray(v) &&
-        ObjectKeys(v).length > 2
-          ? -1
-          : 0;
-      const opt = {
-        depth,
-        maxArrayLength: 3,
-        breakLength: Infinity,
-        ...this[kGetInspectOptions](this._stdout),
-      };
-      return inspect(v, opt);
-    };
-    const getIndexArray = (length) =>
-      ArrayFrom({ length }, (_, i) => _inspect(i));
-
-    const mapIter = isMapIterator(tabularData);
-    let isKeyValue = false;
-    let i = 0;
-    if (mapIter) {
-      const res = previewEntries(tabularData, true);
-      tabularData = res[0];
-      isKeyValue = res[1];
-    }
-
-    if (isKeyValue || isMap(tabularData)) {
-      const keys = [];
-      const values = [];
-      let length = 0;
-      if (mapIter) {
-        for (; i < tabularData.length / 2; ++i) {
-          ArrayPrototypePush(keys, _inspect(tabularData[i * 2]));
-          ArrayPrototypePush(values, _inspect(tabularData[i * 2 + 1]));
-          length++;
-        }
-      } else {
-        for (const { 0: k, 1: v } of tabularData) {
-          ArrayPrototypePush(keys, _inspect(k));
-          ArrayPrototypePush(values, _inspect(v));
-          length++;
-        }
-      }
-      return final(
-        [iterKey, keyKey, valuesKey],
-        [getIndexArray(length), keys, values]
-      );
-    }
-
-    const setIter = isSetIterator(tabularData);
-    if (setIter) tabularData = previewEntries(tabularData);
-
-    const setlike = setIter || mapIter || isSet(tabularData);
-    if (setlike) {
-      const values = [];
-      let length = 0;
-      for (const v of tabularData) {
-        ArrayPrototypePush(values, _inspect(v));
-        length++;
-      }
-      return final([iterKey, valuesKey], [getIndexArray(length), values]);
-    }
-
-    const map = {};
-    let hasPrimitives = false;
-    const valuesKeyArray = [];
-    const indexKeyArray = ObjectKeys(tabularData);
-
-    for (; i < indexKeyArray.length; i++) {
-      const item = tabularData[indexKeyArray[i]];
-      const primitive =
-        item === null ||
-        (typeof item !== 'function' && typeof item !== 'object');
-      if (properties === undefined && primitive) {
-        hasPrimitives = true;
-        valuesKeyArray[i] = _inspect(item);
-      } else {
-        const keys = properties || ObjectKeys(item);
-        for (const key of keys) {
-          if (map[key] === undefined) map[key] = [];
-          if (
-            (primitive && properties) ||
-            !ObjectPrototypeHasOwnProperty(item, key)
-          )
-            map[key][i] = '';
-          else map[key][i] = _inspect(item[key]);
-        }
-      }
-    }
-
-    const keys = ObjectKeys(map);
-    const values = ObjectValues(map);
-    if (hasPrimitives) {
-      ArrayPrototypePush(keys, valuesKey);
-      ArrayPrototypePush(values, valuesKeyArray);
-    }
-    ArrayPrototypeUnshift(keys, indexKey);
-    ArrayPrototypeUnshift(values, indexKeyArray);
-
-    return final(keys, values);
+		// 省略
   },
 ```
 
@@ -426,7 +324,7 @@ const consoleMethods = {
   warn:{/* 省略 */},
   dir:{/* 省略 */},
   time:{/* 省略 */},
- 	// 省略
+ 	// ......省略
 };
 ```
 
@@ -489,12 +387,122 @@ globalConsole[kBindProperties](true, 'auto');
 globalConsole.Console = Console;
 ```
 
+### V8引擎中Object源码实现
+
+`Console`的额外属性是通过`ObjectDefineProperties`方法递归定义的。
+
+C++开发源码中找到目录`deps/v8/src/builtins/builtins-definitions.h`文件，这里暴露所有对象属性的声明，编译之后，提供给V8引擎访问与调用。
+
+下面的属性做前端的，应该会很熟悉，就不做一一介绍了。
+
+```c++
+  /* 对 象 */                                                                   \
+  /* ES #对象构造 */                                                            \
+  TFJ(ObjectAssign, kDontAdaptArgumentsSentinel)                               \
+  /* ES #对象创建 */                                                  	        \
+  TFJ(ObjectCreate, kDontAdaptArgumentsSentinel)                               \
+  CPP(ObjectDefineGetter)                                                      \
+  CPP(ObjectDefineProperties)                                                  \
+  CPP(ObjectDefineProperty)                                                    \
+  CPP(ObjectDefineSetter)                                                      \
+  TFJ(ObjectEntries, 1, kReceiver, kObject)                                    \
+  CPP(ObjectFreeze)                                                            \
+  TFJ(ObjectGetOwnPropertyDescriptor, kDontAdaptArgumentsSentinel)             \
+  CPP(ObjectGetOwnPropertyDescriptors)                                         \
+  TFJ(ObjectGetOwnPropertyNames, 1, kReceiver, kObject)                        \
+  CPP(ObjectGetOwnPropertySymbols)                                             \
+  TFJ(ObjectIs, 2, kReceiver, kLeft, kRight)                                   \
+  CPP(ObjectIsFrozen)                                                          \
+  CPP(ObjectIsSealed)                                                          \
+  TFJ(ObjectKeys, 1, kReceiver, kObject)                                       \
+  CPP(ObjectLookupGetter)                                                      \
+  CPP(ObjectLookupSetter)                                                      \
+  /* ES6 #对象自有属性 */                                                       \
+  TFJ(ObjectPrototypeHasOwnProperty, 1, kReceiver, kKey)                       \
+  TFJ(ObjectPrototypeIsPrototypeOf, 1, kReceiver, kValue)                      \
+  CPP(ObjectPrototypePropertyIsEnumerable)                                     \
+  CPP(ObjectPrototypeGetProto)                                                 \
+  CPP(ObjectPrototypeSetProto)                                                 \
+  CPP(ObjectSeal)                                                              \
+  TFS(ObjectToString, kReceiver)                                               \
+  TFJ(ObjectValues, 1, kReceiver, kObject)  
+```
+
+在`deps/v8/src/builtins/builtins-object.cc`文件中，实现上面声明的每一个属性，是上面的属性的具体实现函数。
+
+这里看一个属性的实现源码，其余的不做过多介绍。
+
+[下面代码源码地址](https://github.com/nodejs/node/blob/80065865be96b5e283e0bd9caccd96521839cd3d/deps/v8/src/builtins/builtins-object.cc#L16)
+
+```c++
+// ES6 section 19.1.2.3 Object.defineProperties
+BUILTIN(ObjectDefineProperties) {
+  HandleScope scope(isolate);
+  DCHECK_LE(3, args.length());
+  Handle<Object> target = args.at(1);
+  Handle<Object> properties = args.at(2);
+
+  RETURN_RESULT_OR_FAILURE(
+      isolate, JSReceiver::DefineProperties(isolate, target, properties));
+}
+```
+
+`HandleScope`是负责内存分配的，它是分配在栈上。它可以有很多`Handle`，而`HandleScope`则相当于装`Handle(Local)`的容器，当`HandleScope`生命周期结束的时候，`Handle`也将会被释放。
+
+函数第一行的`HandleScope scope(isolate)`会管理对象的引用，将当前对象引用的属性分配到栈上。
+
+函数第二行的`DCHECK_LE(3, args.length());`会检查输入的内容。
+
+函数第三和第四行的`Handle<Object> target = args.at(1);`在`context`上下文获取目标内容和所有的属性内容。
+
+![1354452360_3578](https://pica.zhimg.com/80/v2-b218d0966da06f0a423a9e36d942a483_720w.png)
+
+上面的图会比较直观看它们的关系。从上图可以看到，V8的对象都是存在V8的`Heap`中，而`Handle`则是对该对象的引用。
+
+函数第七行`RETURN_RESULT_OR_FAILURE`输出结果或者错误内容。
+
+## 总结
+
+* 首先会创建一个`Console`构造函数，初始定义基本的数据内容和函数方法。
+* 给`Console`简陋的原型添加一个强大的属性和方法。
+* 构造我们常用的原型方法，比如`log`，`info`，`error`，`table`等等。
+* 根据用户调用的方法检查控制台打印的颜色，调用`stream.write(string, errorHandler);`数据流写入，并输出到控制台。
+* 为了做到`Console`使用过程中不需要new实例，直接将其暴露在全局中。
 
 
-## 原生交互
 
-如果你第一感觉是js代码调用C++代码无法理解，那么一定是受到“语法”的干扰。
+### 原生交互
 
-确实，从静态的角度来看，js和C++是两种语言，语法不互通，直接在js代码调用C++函数那是不可能的。
+源码是C++写的，上层是JavaScript，那么它们两个该怎么交互呢？
+
+#### 初始疑惑
+
+`Console`的目录结构
+
+![image-20210924201914232](https://pic2.zhimg.com/80/v2-b960bded7d7e57ce591de0f9daeb4117_720w.png)
+
+源码中这个方式调用方法，让我有点摸不着头脑，`primordials`是哪里来的？
+
+```javascript
+const { ObjectDefineProperties } = primordials
+```
+
+#### 解惑
+
+如果你第一感觉是JavaScript代码调用C++代码无法理解，那么一定是受到“语法”的干扰。
+
+确实，从静态的角度来看，JavaScript和C++是两种语言，语法不互通，直接在JavaScript代码调用C++函数那是不可能的。
 
 那么，从动态的角度（运行时）来看呢？别忘了，任何编程语言最终运行起来都不过是进程空间里的二进制代码和数据。
+
+而上面的`primordials`不过就是运行时`Context`上下文交互的数据而已。
+
+
+
+## 参考文献
+
+[v8引擎文档](https://v8.dev/docs)
+
+[node源码](https://github.com/nodejs/node)
+
+[v8引擎源码](https://github.com/nodejs/node/tree/master/deps/v8)

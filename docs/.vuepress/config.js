@@ -33,7 +33,6 @@ module.exports = {
           "/javascript技术积累/深入浅出koa-static",
           "/javascript技术积累/深入事件循环和定时器",
           "/javascript技术积累/Node、node-watch、Chokidar实现文件监听封装思路解析",
-          "/javascript技术积累/vue手动实现一个简易版subscribeAction",
           "/javascript技术积累/探索nodemon的实现",
         ],
       },
@@ -71,7 +70,12 @@ module.exports = {
       },
       {
         title: "Vue",
-        path: "/Vue",
+        children: [
+          "/vue/vue手动实现一个简易版subscribeAction",
+          "/vue/Vue积累",
+          "/vue/vue的nextTick原理",
+          "/vue/Vue源码的奥秘"
+        ]
       },
       {
         title: "React记录",
@@ -108,7 +112,7 @@ module.exports = {
       },
       {
         title: "服务器端积累",
-        children: ["/服务器端积累/服务器端积累", "/服务器端积累/MySQL索引原理"],
+        children: ["/服务器端积累/服务器端积累", "/服务器端积累/MySQL索引原理", "/服务器端积累/docker笔记"],
       },
       {
         title: "计算机基础",
