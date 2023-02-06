@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>docker-compose入门 | smallzip‘s Blog</title>
+    <meta name="generator" content="VuePress 1.4.1">
+    
+    <meta name="description" content="smallzip 个人博客">
+    <link rel="preload" href="/assets/css/0.styles.2fc78481.css" as="style"><link rel="preload" href="/assets/js/app.7d4f3de2.js" as="script"><link rel="preload" href="/assets/js/2.26b4ca92.js" as="script"><link rel="preload" href="/assets/js/59.58bc3b05.js" as="script"><link rel="prefetch" href="/assets/js/10.b317bce3.js"><link rel="prefetch" href="/assets/js/11.8ee6c761.js"><link rel="prefetch" href="/assets/js/12.53e9bc3d.js"><link rel="prefetch" href="/assets/js/13.d11e5bb2.js"><link rel="prefetch" href="/assets/js/14.1a7ac3aa.js"><link rel="prefetch" href="/assets/js/15.95ba698e.js"><link rel="prefetch" href="/assets/js/16.12cc2725.js"><link rel="prefetch" href="/assets/js/17.0c5dc206.js"><link rel="prefetch" href="/assets/js/18.a740cbf4.js"><link rel="prefetch" href="/assets/js/19.f3a4b9e9.js"><link rel="prefetch" href="/assets/js/20.cb81e1bb.js"><link rel="prefetch" href="/assets/js/21.30ba2eb0.js"><link rel="prefetch" href="/assets/js/22.9a57d305.js"><link rel="prefetch" href="/assets/js/23.f184478a.js"><link rel="prefetch" href="/assets/js/24.1a9da5cc.js"><link rel="prefetch" href="/assets/js/25.9c5fc5df.js"><link rel="prefetch" href="/assets/js/26.a05f5cb7.js"><link rel="prefetch" href="/assets/js/27.824f59c5.js"><link rel="prefetch" href="/assets/js/28.ddbde7dc.js"><link rel="prefetch" href="/assets/js/29.d5273140.js"><link rel="prefetch" href="/assets/js/3.b4eb5e10.js"><link rel="prefetch" href="/assets/js/30.6450fecd.js"><link rel="prefetch" href="/assets/js/31.aac633e0.js"><link rel="prefetch" href="/assets/js/32.0eee40b0.js"><link rel="prefetch" href="/assets/js/33.c0127169.js"><link rel="prefetch" href="/assets/js/34.403722d8.js"><link rel="prefetch" href="/assets/js/35.aa5041e5.js"><link rel="prefetch" href="/assets/js/36.985b8158.js"><link rel="prefetch" href="/assets/js/37.08e49cde.js"><link rel="prefetch" href="/assets/js/38.21290fcb.js"><link rel="prefetch" href="/assets/js/39.69a5f5a9.js"><link rel="prefetch" href="/assets/js/4.53121559.js"><link rel="prefetch" href="/assets/js/40.d8288902.js"><link rel="prefetch" href="/assets/js/41.23fba485.js"><link rel="prefetch" href="/assets/js/42.c64155f7.js"><link rel="prefetch" href="/assets/js/43.3f9d03e3.js"><link rel="prefetch" href="/assets/js/44.d04f9b22.js"><link rel="prefetch" href="/assets/js/45.1791fee7.js"><link rel="prefetch" href="/assets/js/46.aa8ff59b.js"><link rel="prefetch" href="/assets/js/47.db1c8f44.js"><link rel="prefetch" href="/assets/js/48.c2e263aa.js"><link rel="prefetch" href="/assets/js/49.e6cb0744.js"><link rel="prefetch" href="/assets/js/5.f9da8c69.js"><link rel="prefetch" href="/assets/js/50.89c360b1.js"><link rel="prefetch" href="/assets/js/51.3aa0cc1e.js"><link rel="prefetch" href="/assets/js/52.4cb1b1f8.js"><link rel="prefetch" href="/assets/js/53.f5ce2d95.js"><link rel="prefetch" href="/assets/js/54.d31076f1.js"><link rel="prefetch" href="/assets/js/55.cdaa4e53.js"><link rel="prefetch" href="/assets/js/56.4cb18d0b.js"><link rel="prefetch" href="/assets/js/57.41f6c005.js"><link rel="prefetch" href="/assets/js/58.40a34bf6.js"><link rel="prefetch" href="/assets/js/6.1a146ec0.js"><link rel="prefetch" href="/assets/js/60.93d31dd5.js"><link rel="prefetch" href="/assets/js/61.ddb5fc0c.js"><link rel="prefetch" href="/assets/js/62.d4f15634.js"><link rel="prefetch" href="/assets/js/63.f9284901.js"><link rel="prefetch" href="/assets/js/64.ceaab1d0.js"><link rel="prefetch" href="/assets/js/65.443d5ce9.js"><link rel="prefetch" href="/assets/js/66.11b7fa9d.js"><link rel="prefetch" href="/assets/js/67.d4b48018.js"><link rel="prefetch" href="/assets/js/7.920bce8f.js"><link rel="prefetch" href="/assets/js/8.3fcb3827.js"><link rel="prefetch" href="/assets/js/9.2da28544.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.2fc78481.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">smallzip‘s Blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><a href="https://www.jianshu.com/u/e0d0e6cb34d2" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  简书
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://juejin.im/user/5a68b1945188256922633d02" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  掘金
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://github.com/jianpiao" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><a href="https://www.jianshu.com/u/e0d0e6cb34d2" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  简书
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://juejin.im/user/5a68b1945188256922633d02" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  掘金
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://github.com/jianpiao" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/《javascript高级程序设计》笔记.html" class="sidebar-link">《javascript高级程序设计》笔记</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>javascript技术积累</span> <span class="arrow right"></span></p> <!----></section></li><li><a href="/linux笔记.html" class="sidebar-link">linux笔记</a></li><li><a href="/linux课堂代码案例.html" class="sidebar-link">linux课堂代码案例</a></li><li><a href="/算法学习笔记.html" class="sidebar-link">算法学习笔记</a></li><li><a href="/js数据结构与算法.html" class="sidebar-link">js数据结构与算法</a></li><li><a href="/javascript设计模式.html" class="sidebar-link">javascript设计模式</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>phaser游戏引擎</span> <span class="arrow right"></span></p> <!----></section></li><li><a href="/了解HTTP.html" class="sidebar-link">了解HTTP</a></li><li><a href="/Flutter学习笔记.html" class="sidebar-link">Flutter学习笔记</a></li><li><a href="/css学习笔记.html" class="sidebar-link">css学习笔记</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Vue</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>React记录</span> <span class="arrow right"></span></p> <!----></section></li><li><a href="/React-Native.html" class="sidebar-link">React-Native记录</a></li><li><a href="/小程序记录.html" class="sidebar-link">小程序笔记</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Git</span> <span class="arrow right"></span></p> <!----></section></li><li><a href="/webpack.html" class="sidebar-link">Webpack</a></li><li><a href="/js正则积累.html" class="sidebar-link">js正则积累</a></li><li><a href="/前端题目练习.html" class="sidebar-link">前端题目练习</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>服务器端积累</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/服务器端积累/服务器端积累.html" class="sidebar-link">服务器端日常应用积累</a></li><li><a href="/服务器端积累/docker-compose入门.html" class="active sidebar-link">docker-compose入门</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/服务器端积累/docker-compose入门.html#目录结构" class="sidebar-link">目录结构</a></li><li class="sidebar-sub-header"><a href="/服务器端积累/docker-compose入门.html#初始化项目" class="sidebar-link">初始化项目</a></li><li class="sidebar-sub-header"><a href="/服务器端积累/docker-compose入门.html#docker-compose" class="sidebar-link">docker-compose</a></li><li class="sidebar-sub-header"><a href="/服务器端积累/docker-compose入门.html#nginx" class="sidebar-link">Nginx</a></li><li class="sidebar-sub-header"><a href="/服务器端积累/docker-compose入门.html#总结" class="sidebar-link">总结</a></li></ul></li><li><a href="/服务器端积累/MySQL索引原理.html" class="sidebar-link">MySQL索引原理</a></li><li><a href="/服务器端积累/docker笔记.html" class="sidebar-link">Docker笔记</a></li></ul></section></li><li><a href="/计算机基础.html" class="sidebar-link">计算机基础</a></li><li><a href="/网络基础知识.html" class="sidebar-link">网络基础</a></li><li><a href="/基础面试要点知识.html" class="sidebar-link">基础面试知识积累</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="docker-compose入门"><a href="#docker-compose入门" class="header-anchor">#</a> docker-compose入门</h1> <p>这里来搞一个koa+nginx+mysql</p> <h2 id="目录结构"><a href="#目录结构" class="header-anchor">#</a> 目录结构</h2> <div class="language-basic extra-class"><pre class="language-basic"><code>.
+├── conf
+│   └── default.conf
+├── <span class="token keyword">data</span>
+│   └── mysql
+├── docker<span class="token operator">-</span>compose.yml
+├── package.json
+├── server.js
+├── <span class="token keyword">static</span>
+│   └── test.txt
+└── yarn.<span class="token keyword">lock</span>
+</code></pre></div><h2 id="初始化项目"><a href="#初始化项目" class="header-anchor">#</a> 初始化项目</h2> <div class="language-javascript extra-class"><pre class="language-javascript"><code>npm init <span class="token operator">-</span>y
+</code></pre></div><p>修改一下脚本，给个项目启动命令，在<code>package.json</code></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token punctuation">{</span>
+  <span class="token string">&quot;scripts&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;start&quot;</span><span class="token operator">:</span> <span class="token string">&quot;nodemon index.js&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>新增一些必须要的依赖包</p> <div class="language-basic extra-class"><pre class="language-basic"><code>yarn add koa koa<span class="token operator">-</span>router nodemon
+</code></pre></div><p>在根目录下创建一个<code>index.js</code>文件写入如下内容</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">//  server.js</span>
+<span class="token keyword">const</span> Koa <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'koa'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> Router <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'koa-router'</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> mysql <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'promise-mysql'</span><span class="token punctuation">)</span>
+
+<span class="token keyword">let</span> app <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Koa</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">let</span> router <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Router</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment">// 根路由</span>
+router<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token parameter">ctx</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  ctx<span class="token punctuation">.</span>body <span class="token operator">=</span> <span class="token string">'index'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+router<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/get'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token parameter">ctx</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  ctx<span class="token punctuation">.</span>body <span class="token operator">=</span> <span class="token string">'获取内容'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+router<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'/db'</span><span class="token punctuation">,</span> <span class="token keyword">async</span> <span class="token parameter">ctx</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> db <span class="token operator">=</span> <span class="token keyword">await</span> mysql<span class="token punctuation">.</span><span class="token function">createPool</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    host<span class="token operator">:</span> <span class="token string">'mysql'</span><span class="token punctuation">,</span> <span class="token comment">// 这里注意要和mysql镜像同名</span>
+    port<span class="token operator">:</span> <span class="token number">3306</span><span class="token punctuation">,</span>
+    user<span class="token operator">:</span> <span class="token string">'root'</span><span class="token punctuation">,</span>
+    password<span class="token operator">:</span> <span class="token string">'123456'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> <span class="token keyword">await</span> db<span class="token punctuation">.</span><span class="token function">query</span><span class="token punctuation">(</span><span class="token string">'SHOW DATABASES'</span><span class="token punctuation">)</span>
+  ctx<span class="token punctuation">.</span>body <span class="token operator">=</span> res
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+app<span class="token punctuation">.</span><span class="token function">use</span><span class="token punctuation">(</span>router<span class="token punctuation">.</span><span class="token function">routes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+app<span class="token punctuation">.</span><span class="token function">listen</span><span class="token punctuation">(</span><span class="token number">3000</span><span class="token punctuation">)</span>
+
+
+</code></pre></div><h2 id="docker-compose"><a href="#docker-compose" class="header-anchor">#</a> docker-compose</h2> <p>这一步就是开始进行<code>docker-compose</code>配置。
+<code>compose</code>项目是Docker官方的开源项目，负责实现对Docker容器集群的快速编排。
+<code>Compose</code> 定位是 「定义和运行多个 Docker 容器的应用（Defining and running multi-container Docker applications）」，其前身是开源项目 Fig。</p> <p><code>Compose</code>有两个重要的概念：</p> <ul><li>服务 (<code>service</code>)：一个应用的容器，实际上可以包括若干运行相同镜像的容器实例。</li> <li>项目 (<code>project</code>)：由一组关联的应用容器组成的一个完整业务单元，在 <code>docker-compose.yml</code> 文件中定义。</li></ul> <p><code>Compose</code>的默认管理对象是项目，通过子命令对项目的一组容器进行便捷的生命周期管理。
+<img src="https://cdn.nlark.com/yuque/0/2022/png/457751/1645785752817-7b8d99c7-b904-4e9d-8ebe-d08bf5f17736.png#clientId=ucc50ded0-8eb9-4&amp;crop=0&amp;crop=0&amp;crop=1&amp;crop=1&amp;from=paste&amp;height=274&amp;id=u3bb084ad&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=274&amp;originWidth=769&amp;originalType=binary&amp;ratio=1&amp;rotation=0&amp;showTitle=false&amp;size=24396&amp;status=done&amp;style=none&amp;taskId=ud05ea200-550d-48d9-ab4c-690da1a9f5e&amp;title=&amp;width=769" alt="image.png">
+概念了解之后，在跟目录下新建一个<code>docker-compose.yml</code>文件，由于我们要集成三个项目，所以配置三个项目。</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code><span class="token key atrule">version</span><span class="token punctuation">:</span> <span class="token string">&quot;3.1&quot;</span>
+<span class="token key atrule">services</span><span class="token punctuation">:</span>
+  <span class="token key atrule">web</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> node<span class="token punctuation">:</span>14<span class="token punctuation">-</span>alpine <span class="token comment">#node镜像名称</span>
+    <span class="token key atrule">working_dir</span><span class="token punctuation">:</span> /code <span class="token comment">#工作目录</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token comment">#挂载点</span>
+      <span class="token punctuation">-</span> .<span class="token punctuation">:</span>/code <span class="token comment">#把本地当前目录挂载到容器的/code目录</span>
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token comment">#端口映射</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;3000:3000&quot;</span> <span class="token comment">#本地端口：容器端口</span>
+    <span class="token key atrule">command</span><span class="token punctuation">:</span> yarn start <span class="token comment">#这条命令会在工作目录下执行</span>
+
+  <span class="token key atrule">nginx</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> nginx<span class="token punctuation">:</span><span class="token number">1.17</span>
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> ./static<span class="token punctuation">:</span>/code/static
+      <span class="token punctuation">-</span> ./conf/default.conf<span class="token punctuation">:</span>/etc/nginx/conf.d/default.conf
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;80:80&quot;</span>
+
+  <span class="token key atrule">mysql</span><span class="token punctuation">:</span>
+    <span class="token key atrule">image</span><span class="token punctuation">:</span> mysql<span class="token punctuation">:</span>8.0.28<span class="token punctuation">-</span>oracle
+    <span class="token key atrule">command</span><span class="token punctuation">:</span> <span class="token punctuation">-</span><span class="token punctuation">-</span>default<span class="token punctuation">-</span>authentication<span class="token punctuation">-</span>plugin=mysql_native_password
+    <span class="token key atrule">restart</span><span class="token punctuation">:</span> always
+    <span class="token key atrule">volumes</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> ./data<span class="token punctuation">:</span>/var/lib/mysql <span class="token comment">#挂载当前的data目录到容器默认mysql存储目录</span>
+    <span class="token key atrule">environment</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> MYSQL_ROOT_PASSWORD=123456
+      <span class="token punctuation">-</span> MYSQL_DATABASE=test
+    <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token string">&quot;3306:3306&quot;</span>
+
+</code></pre></div><blockquote><p><code>compose</code>有很多命令，具体可以<a href="https://vuepress.mirror.docker-practice.com/compose/commands/" target="_blank" rel="noopener noreferrer">参考地址<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p></blockquote> <h2 id="nginx"><a href="#nginx" class="header-anchor">#</a> Nginx</h2> <p>由于需要修改反向代理的配置文件，所以在根目录下新建一个文件夹：<code>conf</code>，并新建一个文件<code>default.conf</code>
+在文件内容写入：</p> <div class="language-nginx extra-class"><pre class="language-nginx"><code><span class="token keyword">server</span> <span class="token punctuation">{</span>
+    <span class="token keyword">listen</span>       <span class="token number">80</span><span class="token punctuation">;</span>
+    <span class="token keyword">server_name</span>  localhost<span class="token punctuation">;</span>
+
+    <span class="token keyword">location</span> <span class="token operator">/</span>static <span class="token punctuation">{</span>
+        <span class="token keyword">alias</span> <span class="token operator">/</span>code<span class="token operator">/</span>static<span class="token punctuation">;</span>             <span class="token comment">#路径可以自定义，放在什么目录都可以</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">location</span> <span class="token operator">/</span> <span class="token punctuation">{</span>
+        <span class="token keyword">proxy_pass</span> <span class="token keyword">http</span><span class="token punctuation">:</span><span class="token operator">/</span><span class="token operator">/</span>web<span class="token punctuation">:</span><span class="token number">3000</span><span class="token punctuation">;</span>     <span class="token comment">#地址web是docker-compose.yml里面的web服务名</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>新建完成之后，执行命令</p> <div class="language-basic extra-class"><pre class="language-basic"><code>docker<span class="token operator">-</span>compose up
+</code></pre></div><p>会按照配置的内容拉取镜像并运行容器。</p> <h2 id="总结"><a href="#总结" class="header-anchor">#</a> 总结</h2> <p>以上就是一个正常的流程，其实很简单。
+如果在浏览器中访问<code>localhost</code>可以不需要写端口号，假入出问题，可以去检查一下<code>nginx</code>里面的</p> <div class="language-basic extra-class"><pre class="language-basic"><code><span class="token operator">/</span>etc<span class="token operator">/</span>nginx<span class="token operator">/</span>conf.d<span class="token operator">/</span>default.conf
+</code></pre></div><p>是否有被修改，如果没被修改，则先查询<code>docker ps</code>nginx的容器id，然后根据容器id复制</p> <div class="language-basic extra-class"><pre class="language-basic"><code># 复制nginx容器里的配置文件到当前目录
+docker cp <span class="token number">35</span>c5c3671780<span class="token punctuation">:</span><span class="token operator">/</span>etc<span class="token operator">/</span>nginx<span class="token operator">/</span>conf.d<span class="token operator">/</span>default.conf .<span class="token operator">/</span>conf<span class="token operator">/</span>
+</code></pre></div><p>最后重新执行一遍docker任务</p> <div class="language-basic extra-class"><pre class="language-basic"><code>docker<span class="token operator">-</span>compose up
+
+# 或者
+# 删除之前的镜像，重新生成新的镜像和容器
+docker<span class="token operator">-</span>compose up <span class="token operator">-</span>d <span class="token operator">-</span><span class="token operator">-</span>build
+</code></pre></div></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">10/21/2022, 6:15:41 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/服务器端积累/服务器端积累.html" class="prev">
+        服务器端日常应用积累
+      </a></span> <span class="next"><a href="/服务器端积累/MySQL索引原理.html">
+        MySQL索引原理
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.7d4f3de2.js" defer></script><script src="/assets/js/2.26b4ca92.js" defer></script><script src="/assets/js/59.58bc3b05.js" defer></script>
+  </body>
+</html>
